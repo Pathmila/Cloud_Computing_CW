@@ -18,7 +18,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     const healthcareAppPipeline = new CodePipeline(this, 'HealthCareAppPipline', {
       pipelineName: 'HealthCareAppPipeline',
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.connection('rukmals/healthcare-app','master',{
+        input: CodePipelineSource.connection('rukmals/healthcare-app','healthcareapp-production',{
           connectionArn:'arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d'
         }),
        // installCommands: ['npm i -g npm@latest', 'npm install'],
