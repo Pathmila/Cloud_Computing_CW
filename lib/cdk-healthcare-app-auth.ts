@@ -6,6 +6,7 @@ import * as path from "path";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import { appClientConfig, cognitoConfigs } from "./aws-configs/cognito";
 import { UserPoolOperation } from "aws-cdk-lib/aws-cognito";
+import { Duration } from "aws-cdk-lib";
 export interface AuthenticatorProps {
   makeAppointmentFunction: lambda.Function;
 }
@@ -55,6 +56,7 @@ export class Authenticator extends Construct {
         bundling: {
           target: "es2020",
         },
+        timeout: Duration.seconds(30),
       }),
     );
 
@@ -82,6 +84,7 @@ export class Authenticator extends Construct {
       environment: {
         COGNITO_CLIENT_ID: this.cognitoClientId,
       },
+      timeout: Duration.seconds(30),
     });
   }
 
@@ -98,6 +101,7 @@ export class Authenticator extends Construct {
         USER_POOL_ID: this.userPoolId,
         APP_CLIENT_ID: this.cognitoClientId,
       },
+      timeout: Duration.seconds(30),
     });
   }
 }
