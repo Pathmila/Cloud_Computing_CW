@@ -19,11 +19,14 @@ export class Appointment extends Construct {
       this,
       "[Auth]SignUpHandler",
       {
-        entry: path.join(__dirname, "..", "lambda", "appointment.ts"),
-        handler: "createAppointment",
+        entry: path.join(__dirname, "..", "lambda/appointment.ts"),
+        handler: "handler",
         runtime: lambda.Runtime.NODEJS_LATEST,
         environment: {
           APPOINTMENTS_TABLE_NAME: appointmentTable.tableName,
+        },
+        bundling: {
+          target: "es2020",
         },
       },
     );

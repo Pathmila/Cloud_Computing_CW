@@ -11,6 +11,8 @@ import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Cluster, TaskDefinition } from "aws-cdk-lib/aws-ecs";
 import { Role } from "aws-cdk-lib/aws-iam";
 import { handler } from "../lambda/reminder";
+import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
+import * as path from "path";
 
 export class Reminder extends Construct {
   public readonly hourlyReminder: lambda.Function;
@@ -19,14 +21,21 @@ export class Reminder extends Construct {
 
     const reminderQueue = new sqs.Queue(this, "thealthcareapp_reminder_queue");
 
-    this.hourlyReminder = new lambda.Function(this, "[Auth]HourlyReminder", {
-      code: lambda.Code.fromAsset(`lambda`),
-      runtime: lambda.Runtime.NODEJS_LATEST,
-      handler: "reminder.handler",
-      environment: {
-        REMINDER_QUEUE_URL: reminderQueue.queueUrl,
+    this.hourlyReminder = new lambdaNodejs.NodejsFunction(
+      this,
+      "[Auth]HourlyReminder",
+      {
+        entry: path.join(__dirname, "..", "lambda/reminder.ts"),
+        runtime: lambda.Runtime.NODEJS_LATEST,
+        handler: "handler",
+        environment: {
+          REMINDER_QUEUE_URL: reminderQueue.queueUrl,
+        },
+        bundling: {
+          target: "es2020",
+        },
       },
-    });
+    );
 
     new events.Rule(this, "hourly-reminder", {
       schedule: events.Schedule.rate(Duration.minutes(10000)),
