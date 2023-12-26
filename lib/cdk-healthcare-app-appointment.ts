@@ -29,8 +29,9 @@ export class Appointment extends Construct {
   createAppointment(){
     const fn = new lambdaNodejs.NodejsFunction(
       this,
-      "[Auth]SignUpHandler",
+      "[Auth]AppointmentHandler",
       {
+        functionName: "Appointment",
         entry: path.join(__dirname, "..", "lambda/appointment.ts"),
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_LATEST,

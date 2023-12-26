@@ -23,6 +23,7 @@ export class Authenticator extends Construct {
       this,
       "[Auth]AuthorizationHandler",
       {
+        functionName: "Authorization",
         entry: path.join(
           __dirname,
           "..",

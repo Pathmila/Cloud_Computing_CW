@@ -25,6 +25,7 @@ export class Reminder extends Construct {
       this,
       "[Auth]HourlyReminder",
       {
+        functionName: "Reminder",
         entry: path.join(__dirname, "..", "lambda/reminder.ts"),
         runtime: lambda.Runtime.NODEJS_LATEST,
         handler: "handler",
