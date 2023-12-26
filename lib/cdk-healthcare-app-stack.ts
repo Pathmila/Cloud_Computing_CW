@@ -15,10 +15,8 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     super(scope, id, props);
 
     const appAppointment = new Appointment(this, "AppAppointment");
-    // const appAuthenticator = new Authenticator(this, "AppAuthenticator", {
-    //   makeAppointmentFunction: appAppointment.createAppointment,
-    // });
     const appReminder = new Reminder(this, "AppReminder");
+    this.apiGateway();
 
     //defining pipeline
     const healthcareAppPipeline = new CodePipeline(
@@ -42,37 +40,60 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     );
 
     //app api gateway define
-    const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
-
-    const baseRoute = healthCareAppAPIGw.root.addResource("v1");
-
-    const authRoute = baseRoute.addResource("auth");
-    const appointmentRoute = baseRoute.addResource("appointment");
-
+    // const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
+    //
+    // const baseRoute = healthCareAppAPIGw.root.addResource("v1");
+    //
+    // const authRoute = baseRoute.addResource("auth");
+    // const appointmentRoute = baseRoute.addResource("appointment");
+    //
     // // setting signup
     // const signupRoute = authRoute.addResource("signup");
-    // signupRoute.addMethod(
-    //   "GET",
-    //   new apigw.LambdaIntegration(appAuthenticator.signUpHandler),
-    // );
-
+    // signupRoute.addMethod("GET", new apigw.LambdaIntegration(signUp()));
+    //
     // // setting signin
     // const signinRoute = authRoute.addResource("signin");
     // signinRoute.addMethod(
     //   "GET",
-    //   new apigw.LambdaIntegration(appAuthenticator.signInHandler),
+    //   new apigw.LambdaIntegration(appAuthenticator.signIn()),
     // );
 
-    // appointment operations
-    // appointmentRoute.addResource("create").addMethod();
-    appointmentRoute.addMethod(
-      "POST",
-      new apigw.LambdaIntegration(appAppointment.createAppointment()),
-    );
-
-    // appointmentRoute.addMethod(
+    // // appointment operations
+    // const appointmentCreate = appointmentRoute.addResource("create");
+    // appointmentCreate.addMethod(
     //   "GET",
-    //   new apigw.LambdaIntegration(appAppointment.getAppointment()),
+    //   new apigw.LambdaIntegration(appAuthenticator.authorizationHandler),
     // );
+  }
+
+  private apiGateway() {
+    const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
+    const baseRoute = healthCareAppAPIGw.root.addResource("v1");
+    const authRoute = baseRoute.addResource("auth");
+    const appointmentRoute = baseRoute.addResource("appointment");
+
+    const appAppointment = new Appointment(this, "AppAppointment");
+    const appAuthenticator = new Authenticator(this, "AppAuthenticator", {
+      makeAppointmentFunction: appAppointment.createAppointment,
+    });
+
+    authRoute
+      .addResource("signup")
+      .addMethod(
+        "POST",
+        new apigw.LambdaIntegration(appAuthenticator.signUp()),
+      );
+
+    authRoute
+      .addResource("signin")
+      .addMethod(
+        "POST",
+        new apigw.LambdaIntegration(appAuthenticator.signIn()),
+      );
+
+      appointmentRoute.addMethod(
+          "POST",
+          new apigw.LambdaIntegration(appAppointment.createAppointment()),
+      );
   }
 }

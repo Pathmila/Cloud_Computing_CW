@@ -19,7 +19,6 @@ export class Authenticator extends Construct {
   constructor(scope: Construct, id: string, props: AuthenticatorProps) {
     super(scope, id);
     this.cognitoInit();
-
     this.authorizationHandler = new lambdaNodejs.NodejsFunction(
       this,
       "[Auth]AuthorizationHandler",
@@ -72,6 +71,7 @@ export class Authenticator extends Construct {
 
   signUp() {
     return new lambdaNodejs.NodejsFunction(this, "[Auth]SignUpHandler", {
+      functionName: "SignUp",
       entry: path.join(__dirname, "..", "lambda/authenticate/signUp.ts"),
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
@@ -83,6 +83,7 @@ export class Authenticator extends Construct {
 
   signIn() {
     return new lambdaNodejs.NodejsFunction(this, "[Auth]SignInHandler", {
+      functionName: "SignIn",
       entry: path.join(__dirname, "..", "lambda/authenticate/signIn.ts"),
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
