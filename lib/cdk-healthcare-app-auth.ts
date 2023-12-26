@@ -79,6 +79,9 @@ export class Authenticator extends Construct {
       bundling: {
         target: "es2020",
       },
+      environment: {
+        COGNITO_CLIENT_ID: this.cognitoClientId,
+      },
     });
   }
 
@@ -90,6 +93,10 @@ export class Authenticator extends Construct {
       runtime: lambda.Runtime.NODEJS_LATEST,
       bundling: {
         target: "es2020",
+      },
+      environment: {
+        USER_POOL_ID: this.userPoolId,
+        APP_CLIENT_ID: this.cognitoClientId,
       },
     });
   }
