@@ -14,7 +14,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const appAppointment = new Appointment(this, "AppAppointment");
+    // const appAppointment = new Appointment(this, "AppAppointment");
     const appReminder = new Reminder(this, "AppReminder");
     this.apiGateway();
 
