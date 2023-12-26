@@ -41,32 +41,6 @@ export class Authenticator extends Construct {
       },
     );
 
-    this.signUpHandler = new lambdaNodejs.NodejsFunction(
-      this,
-      "[Auth]SignUpHandler",
-      {
-        entry: path.join(__dirname, "..", "lambda/authenticate/signUp.ts"),
-        handler: "handler",
-        runtime: lambda.Runtime.NODEJS_LATEST,
-        bundling: {
-          target: "es2020",
-        },
-      },
-    );
-
-    this.signInHandler = new lambdaNodejs.NodejsFunction(
-      this,
-      "[Auth]SignInHandler",
-      {
-        entry: path.join(__dirname, "..", "lambda/authenticate/signIn.ts"),
-        handler: "handler",
-        runtime: lambda.Runtime.NODEJS_LATEST,
-        bundling: {
-          target: "es2020",
-        },
-      },
-    );
-
     props.makeAppointmentFunction.grantInvoke(this.authorizationHandler);
   }
 
@@ -93,6 +67,28 @@ export class Authenticator extends Construct {
     });
     new cdk.CfnOutput(this, "AppClientIdOutput", {
       value: client.userPoolClientId,
+    });
+  }
+
+  signUp() {
+    return new lambdaNodejs.NodejsFunction(this, "[Auth]SignUpHandler", {
+      entry: path.join(__dirname, "..", "lambda/authenticate/signUp.ts"),
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_LATEST,
+      bundling: {
+        target: "es2020",
+      },
+    });
+  }
+
+  signIn() {
+    return new lambdaNodejs.NodejsFunction(this, "[Auth]SignInHandler", {
+      entry: path.join(__dirname, "..", "lambda/authenticate/signIn.ts"),
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_LATEST,
+      bundling: {
+        target: "es2020",
+      },
     });
   }
 }
