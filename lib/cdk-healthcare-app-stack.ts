@@ -43,20 +43,6 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     // const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
     //
     // const baseRoute = healthCareAppAPIGw.root.addResource("v1");
-    //
-    // const authRoute = baseRoute.addResource("auth");
-    // const appointmentRoute = baseRoute.addResource("appointment");
-    //
-    // // setting signup
-    // const signupRoute = authRoute.addResource("signup");
-    // signupRoute.addMethod("GET", new apigw.LambdaIntegration(signUp()));
-    //
-    // // setting signin
-    // const signinRoute = authRoute.addResource("signin");
-    // signinRoute.addMethod(
-    //   "GET",
-    //   new apigw.LambdaIntegration(appAuthenticator.signIn()),
-    // );
 
     // // appointment operations
     // const appointmentCreate = appointmentRoute.addResource("create");
