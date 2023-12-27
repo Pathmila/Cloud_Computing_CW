@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const ses = new AWS.SES({ region: "us-east-2" });
     const params = {Source: "thisera.sajith@gmail.com", Destination:{ToAddresses:["sajith.waruna@yahoo.com"]}, Message:{Subject:{Data:"Test!!!"}, Body:{Text:{Data:"Test body!"}}}}
-    ses.sendEmail(params).promise();
+    await ses.sendEmail(params).promise();
     return {
       statusCode: 200,
       headers: { "Content-Type": "text/plain" },
