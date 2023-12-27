@@ -6,16 +6,21 @@ import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from "node:path";
 
 export class Appointment extends Construct {
-  public readonly createAppointment: lambda.Function;
+  
+  private appointmentTable;
   constructor(scope: Construct, id: string, props?: any) {
     super(scope, id);
 
-    const appointmentTable = new dynamodb.Table(this, "Appointments", {
-      partitionKey: { name: "Patient", type: dynamodb.AttributeType.STRING },
+    this.appointmentTable = new dynamodb.Table(this, "Appointments", {
+      partitionKey: { name: "patientid", type: dynamodb.AttributeType.STRING },
+      tableName: "Appointments",
+      sortKey: { name: "appointmentid", type: dynamodb.AttributeType.STRING }
     });
+  }
 
-    //make the appointment
-    this.createAppointment = new lambdaNodejs.NodejsFunction(
+  //make the appointment
+  createAppointment(){
+    const fn = new lambdaNodejs.NodejsFunction(
       this,
       "[Auth]SignUpHandler",
       {
@@ -23,15 +28,15 @@ export class Appointment extends Construct {
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_LATEST,
         environment: {
-          APPOINTMENTS_TABLE_NAME: appointmentTable.tableName,
+          APPOINTMENTS_TABLE_NAME: this.appointmentTable.tableName,
         },
         bundling: {
           target: "es2020",
         },
       },
     );
-
     // grant the lambda role read/write permissions to our table
-    appointmentTable.grantReadWriteData(this.createAppointment);
+    this.appointmentTable.grantReadWriteData(fn);
+    return fn;
   }
 }

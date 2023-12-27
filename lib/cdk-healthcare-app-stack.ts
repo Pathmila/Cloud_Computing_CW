@@ -15,9 +15,9 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     super(scope, id, props);
 
     const appAppointment = new Appointment(this, "AppAppointment");
-    const appAuthenticator = new Authenticator(this, "AppAuthenticator", {
-      makeAppointmentFunction: appAppointment.createAppointment,
-    });
+    // const appAuthenticator = new Authenticator(this, "AppAuthenticator", {
+    //   makeAppointmentFunction: appAppointment.createAppointment,
+    // });
     const appReminder = new Reminder(this, "AppReminder");
 
     //defining pipeline
@@ -29,7 +29,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
         synth: new ShellStep("Synth", {
           input: CodePipelineSource.connection(
             "rukmals/healthcare-app",
-            "healthcareapp-production",
+            "appointment-booking", //branch name -> my
             {
               connectionArn:
                 "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
@@ -49,25 +49,25 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     const authRoute = baseRoute.addResource("auth");
     const appointmentRoute = baseRoute.addResource("appointment");
 
-    // setting signup
-    const signupRoute = authRoute.addResource("signup");
-    signupRoute.addMethod(
-      "GET",
-      new apigw.LambdaIntegration(appAuthenticator.signUpHandler),
-    );
+    // // setting signup
+    // const signupRoute = authRoute.addResource("signup");
+    // signupRoute.addMethod(
+    //   "GET",
+    //   new apigw.LambdaIntegration(appAuthenticator.signUpHandler),
+    // );
 
-    // setting signin
-    const signinRoute = authRoute.addResource("signin");
-    signinRoute.addMethod(
-      "GET",
-      new apigw.LambdaIntegration(appAuthenticator.signInHandler),
-    );
+    // // setting signin
+    // const signinRoute = authRoute.addResource("signin");
+    // signinRoute.addMethod(
+    //   "GET",
+    //   new apigw.LambdaIntegration(appAuthenticator.signInHandler),
+    // );
 
     // appointment operations
-    const appointmentCreate = appointmentRoute.addResource("create");
-    appointmentCreate.addMethod(
-      "GET",
-      new apigw.LambdaIntegration(appAuthenticator.authorizationHandler),
+    // appointmentRoute.addResource("create").addMethod();
+    appointmentRoute.addMethod(
+      "POST",
+      new apigw.LambdaIntegration(appAppointment.createAppointment()),
     );
   }
 }

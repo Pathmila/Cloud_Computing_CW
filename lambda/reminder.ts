@@ -3,7 +3,7 @@ import * as AWS from "aws-sdk";
 
 export const handler = async (event: APIGatewayEvent): Promise<void> => {
   try {
-    const sqs = new AWS.SQS({ region: "us-east-1" });
+    const sqs = new AWS.SQS({ region: "us-west-2" });
     console.log("Hourly reminder!");
     console.log(process.env.REMINDER_QUEUE_URL);
     await sqs

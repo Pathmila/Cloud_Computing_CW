@@ -11,6 +11,7 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.130",
     "@types/jest": "^29.5.11",
     "@types/node": "20.10.4",
     "aws-cdk": "2.115.0",
@@ -21,12 +22,15 @@
     "typescript": "~5.3.3"
   },
   "dependencies": {
+    "@aws-cdk/assets": "^1.204.0",
+    "@aws-cdk/region-info": "^2.116.1",
     "@aws-solutions-constructs/aws-eventbridge-lambda": "^2.47.0",
     "aws-cdk-lib": "2.115.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1525.0",
-    "constructs": "^10.0.0",
+    "constructs": "^10.3.0",
     "prettier": "^3.1.1",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "uuidv4": "^6.2.13"
   }
 }

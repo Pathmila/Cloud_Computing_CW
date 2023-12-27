@@ -4,7 +4,7 @@ export const handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   console.log("request:", JSON.stringify(event, undefined, 2));
-  const lambda = new Lambda({ region: "us-east-1" });
+  const lambda = new Lambda({ region: "us-west-2" });
   const resp = await lambda
     .invoke({
       FunctionName: process.env
