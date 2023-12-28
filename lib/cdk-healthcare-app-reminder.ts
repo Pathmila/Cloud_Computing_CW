@@ -43,5 +43,9 @@ export class Reminder extends Construct {
     });
 
     reminderQueue.grantSendMessages(this.hourlyReminder);
+    
+    this.hourlyReminder.role?.addManagedPolicy({
+      managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonSESFullAccess',
+    });
   }
 }
