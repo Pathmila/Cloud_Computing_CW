@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as AWS from "aws-sdk";
-import { uuid } from 'uuidv4';
+import { uuid } from 'uuid';
 import { Appointment } from "../lib/cdk-healthcare-app-appointment";
 
 interface IAppointment{
@@ -62,6 +62,11 @@ export const handler = async (
         },
       })
       .promise();
+      return {
+        statusCode: 200,
+        headers: { "Content-Type": "text/plain" },
+        body: `Hello before one hour notification made for you!`,
+      };
 
       await dynamoDB
       .put({
@@ -75,6 +80,11 @@ export const handler = async (
         },
       })
       .promise();
+      return {
+        statusCode: 200,
+        headers: { "Content-Type": "text/plain" },
+        body: `Hello before fifteen minutes notification made for you!`,
+      };
 
     return {
       statusCode: 200,
