@@ -8,6 +8,7 @@ import * as path from "node:path";
 export class Appointment extends Construct {
   
   private appointmentTable;
+  private notificationTable;
   constructor(scope: Construct, id: string, props?: any) {
     super(scope, id);
 
@@ -16,6 +17,12 @@ export class Appointment extends Construct {
       tableName: "Appointments",
       sortKey: { name: "appointmentid", type: dynamodb.AttributeType.STRING }
     });
+
+    this.notificationTable = new dynamodb.Table(this, "notificationTable", {
+      partitionKey: {name: "patientid", type: dynamodb.AttributeType.STRING },
+      tableName: "Notifications",
+      sortKey: { name: "appointmentid", type: dynamodb.AttributeType.STRING }
+    })
   }
 
   //make the appointment
@@ -29,6 +36,7 @@ export class Appointment extends Construct {
         runtime: lambda.Runtime.NODEJS_LATEST,
         environment: {
           APPOINTMENTS_TABLE_NAME: this.appointmentTable.tableName,
+          NOTIFICATION_TABLE_NAME: this.notificationTable.tableName,
         },
         bundling: {
           target: "es2020",
