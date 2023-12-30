@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as AWS from "aws-sdk";
-import { uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { Appointment } from "../lib/cdk-healthcare-app-appointment";
 
 interface IAppointment{
@@ -25,7 +25,7 @@ export const handler = async (
     const payload:IAppointment = JSON.parse(event.body as string);
     console.log("appointment paylod", payload);
 
-    let patientid_uuid = uuid();
+    let patientid_uuid = uuidv4();
     const dynamoDB = new AWS.DynamoDB.DocumentClient();
     await dynamoDB
       .put({
