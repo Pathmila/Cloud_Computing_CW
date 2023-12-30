@@ -41,32 +41,18 @@ export const handler = async (
       })
       .promise();
 
-      let appointmentTimeStr: string = payload.appointmenttime;
-      let appointmentTimeBeforeOneHour: Date = new Date(appointmentTimeStr);
-      let appointmentTimeBeforeFifteenMinutes: Date = new Date(appointmentTimeStr);
-    
-      appointmentTimeBeforeOneHour.setHours(appointmentTimeBeforeOneHour.getHours() - 1);
-      appointmentTimeBeforeFifteenMinutes.setMinutes(appointmentTimeBeforeFifteenMinutes.getMinutes() - 15);;
-      
-      let newAppointmentTimeStrBeforeOneHour: string = appointmentTimeBeforeOneHour.toISOString();
-      
       await dynamoDB
       .put({
         TableName: process.env.NOTIFICATION_TABLE_NAME as string,
         Item: {
           patientid: payload.patientid ,
           appointmentid: patientid_uuid ,          
-          appointmenttime: newAppointmentTimeStrBeforeOneHour,
+          appointmenttime: "7.30",
           date: payload.date,
           createdat: Date.now()
         },
       })
       .promise();
-      return {
-        statusCode: 200,
-        headers: { "Content-Type": "text/plain" },
-        body: `Hello before one hour notification made for you!`,
-      };
 
       await dynamoDB
       .put({
@@ -74,17 +60,12 @@ export const handler = async (
         Item: {
           patientid: payload.patientid ,
           appointmentid: patientid_uuid ,          
-          appointmenttime: appointmentTimeBeforeFifteenMinutes,
+          appointmenttime: "8.15",
           date: payload.date,
           createdat: Date.now()
         },
       })
       .promise();
-      return {
-        statusCode: 200,
-        headers: { "Content-Type": "text/plain" },
-        body: `Hello before fifteen minutes notification made for you!`,
-      };
 
     return {
       statusCode: 200,
