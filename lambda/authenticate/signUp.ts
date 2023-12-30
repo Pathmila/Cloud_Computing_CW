@@ -29,7 +29,7 @@ const cognitoSignup = async (body: ISignUp): Promise<void> => {
     const { email, password, familyName, givenName } = body;
 
     const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({ region: "us-east-1" });
+      new AWS.CognitoIdentityServiceProvider({ region: process.env.REGION });
 
     const params = {
       ClientId: process.env.COGNITO_CLIENT_ID as string,

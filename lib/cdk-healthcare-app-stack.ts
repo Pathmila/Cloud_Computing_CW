@@ -27,7 +27,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
         synth: new ShellStep("Synth", {
           input: CodePipelineSource.connection(
             "rukmals/healthcare-app",
-            "healthcareapp-production",
+            "cognito-config-latest",
             {
               connectionArn:
                 "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
@@ -63,6 +63,14 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       makeAppointmentFunction: appAppointment.createAppointment,
     });
 
+    const auth = new apigw.CognitoUserPoolsAuthorizer(
+      this,
+      "patientAuthorizer",
+      {
+        cognitoUserPools: [appAuthenticator.userPoolInstance],
+      },
+    );
+
     authRoute
       .addResource("signup")
       .addMethod(
@@ -75,6 +83,10 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       .addMethod(
         "POST",
         new apigw.LambdaIntegration(appAuthenticator.signIn()),
+        {
+          authorizer: auth,
+          authorizationType: apigw.AuthorizationType.COGNITO,
+        },
       );
 
       appointmentRoute.addMethod(

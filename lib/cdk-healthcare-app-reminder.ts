@@ -1,16 +1,9 @@
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
-import {
-  EventbridgeToLambdaProps,
-  EventbridgeToLambda,
-} from "@aws-solutions-constructs/aws-eventbridge-lambda";
 import * as events from "aws-cdk-lib/aws-events";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 import { Stack, StackProps, Duration } from "aws-cdk-lib";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
-import { Cluster, TaskDefinition } from "aws-cdk-lib/aws-ecs";
-import { Role } from "aws-cdk-lib/aws-iam";
-import { handler } from "../lambda/reminder";
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from "path";
 

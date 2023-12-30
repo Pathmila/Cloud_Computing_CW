@@ -14,35 +14,12 @@ export interface AuthenticatorProps {
 export class Authenticator extends Construct {
   private cognitoClientId: string;
   private userPoolId: string;
-  public readonly signUpHandler: lambda.Function;
-  public readonly signInHandler: lambda.Function;
   public readonly authorizationHandler: lambda.Function;
+  public userPoolInstance;
+
   constructor(scope: Construct, id: string, props: AuthenticatorProps) {
     super(scope, id);
-    this.cognitoInit();
-    this.authorizationHandler = new lambdaNodejs.NodejsFunction(
-      this,
-      "[Auth]AuthorizationHandler",
-      {
-        functionName: "Authorization",
-        entry: path.join(
-          __dirname,
-          "..",
-          "lambda/authenticate/authorization.ts",
-        ),
-        handler: "handler",
-        runtime: lambda.Runtime.NODEJS_LATEST,
-        environment: {
-          DOWNSTREAM_MAKE_APPOINTMENT_FUNCTION_NAME:
-            props.makeAppointmentFunction.functionName,
-        },
-        bundling: {
-          target: "es2020",
-        },
-      },
-    );
-
-    props.makeAppointmentFunction.grantInvoke(this.authorizationHandler);
+    this.userPoolInstance = this.cognitoInit();
   }
 
   private cognitoInit() {
@@ -70,6 +47,7 @@ export class Authenticator extends Construct {
     new cdk.CfnOutput(this, "AppClientIdOutput", {
       value: client.userPoolClientId,
     });
+    return pool;
   }
 
   signUp() {
