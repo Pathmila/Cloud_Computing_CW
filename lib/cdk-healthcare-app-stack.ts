@@ -69,5 +69,10 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       "POST",
       new apigw.LambdaIntegration(appAppointment.createAppointment()),
     );
+
+    // appointmentRoute.addMethod(
+    //   "GET",
+    //   new apigw.LambdaIntegration(appAppointment.getAppointment()),
+    // );
   }
 }

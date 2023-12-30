@@ -15,7 +15,7 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     console.log("request:", JSON.stringify(event, undefined, 2));
-    const payload:IAppointment = JSON.parse(event.body);
+    const payload:IAppointment = JSON.parse(event.body as string);
     console.log("appointment paylod", payload);
 
     const dynamoDB = new AWS.DynamoDB.DocumentClient();
