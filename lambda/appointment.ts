@@ -25,7 +25,7 @@ export const handler = async (
     const payload:IAppointment = JSON.parse(event.body as string);
     console.log("appointment paylod", payload);
 
-    const patientid_uuid = uuid();
+    let patientid_uuid = uuid();
     const dynamoDB = new AWS.DynamoDB.DocumentClient();
     await dynamoDB
       .put({
