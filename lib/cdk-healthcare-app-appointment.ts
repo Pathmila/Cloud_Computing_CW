@@ -45,6 +45,29 @@ export class Appointment extends Construct {
     );
     // grant the lambda role read/write permissions to our table
     this.appointmentTable.grantReadWriteData(fn);
+    this.notificationTable.grantReadWriteData(fn);
+    return fn;
+  }
+
+  //Get appointments
+  getAppointment(){
+    const fn = new lambdaNodejs.NodejsFunction(
+      this,
+      "[Auth]SignUpHandler",
+      {
+        entry: path.join(__dirname, "..", "lambda/getAppointment.ts"),
+        handler: "handler",
+        runtime: lambda.Runtime.NODEJS_LATEST,
+        environment: {
+          APPOINTMENTS_TABLE_NAME: this.appointmentTable.tableName,          
+        },
+        bundling: {
+          target: "es2020",
+        },
+      },
+    );
+    // grant the lambda role read/write permissions to our table
+    this.appointmentTable.grantReadWriteData(fn);
     return fn;
   }
 }
