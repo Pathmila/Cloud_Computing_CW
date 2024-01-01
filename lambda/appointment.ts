@@ -10,7 +10,7 @@ interface IAppointment{
   date: string;
 }
 
-interface IAppointment{
+interface INotification{
   patientid: string;
   appointmentid: string;
   appointmenttime: string;
@@ -41,14 +41,16 @@ export const handler = async (
       })
       .promise();
 
+      const payload_notification:INotification = JSON.parse(event.body as string);
+      console.log("notification paylod", payload_notification);
       await dynamoDB
       .put({
         TableName: process.env.NOTIFICATION_TABLE_NAME as string,
         Item: {
-          patientid: payload.patientid ,
+          patientid: payload_notification.patientid ,
           appointmentid: patientid_uuid ,          
           appointmenttime: "7.30",
-          date: payload.date,
+          date: payload_notification.date,
           createdat: Date.now()
         },
       })
@@ -58,10 +60,10 @@ export const handler = async (
       .put({
         TableName: process.env.NOTIFICATION_TABLE_NAME as string,
         Item: {
-          patientid: payload.patientid ,
+          patientid: payload_notification.patientid ,
           appointmentid: patientid_uuid ,          
           appointmenttime: "8.15",
-          date: payload.date,
+          date: payload_notification.date,
           createdat: Date.now()
         },
       })

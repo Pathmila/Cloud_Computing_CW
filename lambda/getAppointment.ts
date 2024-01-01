@@ -5,7 +5,7 @@ export const handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
-    console.log("request:", JSON.stringify(event, undefined, 2);
+    console.log("request:", JSON.stringify(event, undefined, 2));
 
     const dynamoDB = new AWS.DynamoDB.DocumentClient();
     const tableName = process.env.APPOINTMENTS_TABLE_NAME as string;
