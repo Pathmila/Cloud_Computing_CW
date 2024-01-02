@@ -9,7 +9,6 @@ import {
   ShellStep,
 } from "aws-cdk-lib/pipelines";
 import { getParameterValues } from "./aws-configs/parameters";
-import * as iam from "@aws-cdk/aws-iam";
 
 export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -20,37 +19,23 @@ export class CdkHealthcareAppStack extends cdk.Stack {
   }
 
   //defining pipeline
-  private async setCICDPipeLine() {
-    const ssmReadPolicy = new iam.PolicyStatement({
-      actions: ["ssm:GetParameters"],
-      resources: ["*"],
-    });
-
-    // @ts-ignore
-    const codePipelineRole = new iam.Role(this, "CodePipelineRole", {
-      assumedBy: new iam.ServicePrincipal("codepipeline.amazonaws.com"),
-    });
-    codePipelineRole.addToPolicy(ssmReadPolicy);
-
+  private setCICDPipeLine() {
     const pipeline = new CodePipeline(this, "HealthCareAppPipeline", {
       pipelineName: "HealthCareAppPipeline",
-      role: codePipelineRole,
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.connection(
-          await getParameterValues("/HEALTH_APP/PROD/REPOSITORY_NAME"),
-          await getParameterValues("/HEALTH_APP/PROD/BRANCH_NAME"),
+          "rukmals/healthcare-app",
+          "devtest",
           {
-            connectionArn: await getParameterValues(
-              "/HEALTH_APP/PROD/CONNECTION_ARN",
-            ),
+            connectionArn:
+              "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
           },
         ),
+        // installCommands: ['npm i -g npm@latest', 'npm install'],
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
     });
   }
-
-  private pipeLineIAMRole() {}
 
   private apiGateway() {
     const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
