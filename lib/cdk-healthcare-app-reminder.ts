@@ -2,20 +2,23 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from "path";
+import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+
+export interface ReminderProps {
+  appointmentHourlyReminderTable: dynamodb.Table;
+}
 
 export class Reminder extends Construct {
   public hourlyReminder: lambda.Function;
-  constructor(scope: Construct, id: string, props?: any) {
+  constructor(scope: Construct, id: string, props: ReminderProps) {
     super(scope, id);
-  }
-
-  reminderEvent() {
     this.hourlyReminder = new lambdaNodejs.NodejsFunction(
       this,
       "[Auth]HourlyReminder",
       {
         functionName: "Reminder",
-        entry: path.join(__dirname, "..", "lambda/reminder.ts"),
+        entry: path.join(__dirname, "..", "lambda/reminder/reminder.ts"),
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
         bundling: {
@@ -23,8 +26,20 @@ export class Reminder extends Construct {
         },
       },
     );
+
     this.hourlyReminder.role?.addManagedPolicy({
       managedPolicyArn: "arn:aws:iam::aws:policy/AmazonSESFullAccess",
     });
+
+    this.hourlyReminder.role?.addManagedPolicy({
+      managedPolicyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess",
+    });
+
+    //configuring event stream from dynamoDb -> lambda
+    this.hourlyReminder.addEventSource(
+      new DynamoEventSource(props.appointmentHourlyReminderTable, {
+        startingPosition: lambda.StartingPosition.LATEST,
+      }),
+    );
   }
 }

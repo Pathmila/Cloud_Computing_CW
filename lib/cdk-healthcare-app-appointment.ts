@@ -7,8 +7,8 @@ import * as path from "node:path";
 import * as cdk from "aws-cdk-lib";
 
 export class Appointment extends Construct {
-  private appointmentTable: dynamodb.Table;
-  private reminderTable: dynamodb.Table;
+  public appointmentTable: dynamodb.Table;
+  public reminderTable: dynamodb.Table;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id);
     this.setupAppointmentTable();

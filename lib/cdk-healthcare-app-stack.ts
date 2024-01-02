@@ -9,6 +9,7 @@ import {
   ShellStep,
 } from "aws-cdk-lib/pipelines";
 import { getParameterValues } from "./aws-configs/parameters";
+import { Reminder } from "./cdk-healthcare-app-reminder";
 
 export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -45,6 +46,10 @@ export class CdkHealthcareAppStack extends cdk.Stack {
 
     const appAppointment = new Appointment(this, "AppAppointment");
     const appAuthenticator = new Authenticator(this, "AppAuthenticator");
+
+    new Reminder(this, "AppReminder", {
+      appointmentHourlyReminderTable: appAppointment.reminderTable,
+    });
 
     const auth = new apigw.CognitoUserPoolsAuthorizer(
       this,
