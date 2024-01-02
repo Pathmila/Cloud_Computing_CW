@@ -10,7 +10,7 @@ import { Duration } from "aws-cdk-lib";
 
 export class Authenticator extends Construct {
   private cognitoClientId: string;
-  private userPoolId: string;
+  public userPoolId: string;
   public userPoolInstance;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {

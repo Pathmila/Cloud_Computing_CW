@@ -7,6 +7,7 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 
 export interface ReminderProps {
   appointmentHourlyReminderTable: dynamodb.Table;
+  userPoolId: string;
 }
 
 export class Reminder extends Construct {
@@ -23,6 +24,9 @@ export class Reminder extends Construct {
         handler: "handler",
         bundling: {
           target: "es2020",
+        },
+        environment: {
+          USER_POOL_ID: props.userPoolId,
         },
       },
     );

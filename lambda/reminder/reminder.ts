@@ -58,7 +58,7 @@ const getCognitoUser = async (username: string) => {
       Username: username,
       UserPoolId: process.env.USER_POOL_ID as string,
     };
-    const result = cognitoIdentityServiceProvider
+    const result = await cognitoIdentityServiceProvider
       .adminGetUser(params)
       .promise();
     console.log("result", result);

@@ -49,6 +49,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
 
     new Reminder(this, "AppReminder", {
       appointmentHourlyReminderTable: appAppointment.reminderTable,
+      userPoolId: appAuthenticator.userPoolId,
     });
 
     const auth = new apigw.CognitoUserPoolsAuthorizer(
