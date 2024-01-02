@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
+import { extractTokenData } from "../helper";
 
 interface IAppointment {
   patient_id: string;
@@ -13,8 +14,11 @@ export const handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
+    console.log("event", event);
     const payload: IAppointment = JSON.parse(event.body as string);
     console.log("appointment payload", payload);
+
+    const patientId = extractTokenData("");
 
     let appointmentId = uuidv4();
     const dynamoDB = new AWS.DynamoDB.DocumentClient({
@@ -75,12 +79,10 @@ export const handler = async (
   }
 };
 
-const timestampMinutesBefore = (
-  isoTimestamp: string,
-  minutesBefore: number,
-) => {
-  const date = new Date(isoTimestamp);
+const timestampMinutesBefore = (localTime: string, minutesBefore: number) => {
+  const date = new Date(localTime);
   date.setTime(date.getTime() - minutesBefore * 60 * 1000);
   console.log(date);
+  console.log("LocalTime", date.toLocaleString());
   return date;
 };
