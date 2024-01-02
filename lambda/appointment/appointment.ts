@@ -18,7 +18,8 @@ export const handler = async (
     const payload: IAppointment = JSON.parse(event.body as string);
     console.log("appointment payload", payload);
 
-    const patientId = extractTokenData("");
+    const patientId = extractTokenData(event?.headers?.Authorization as string);
+    console.log("patientId", patientId);
 
     let appointmentId = uuidv4();
     const dynamoDB = new AWS.DynamoDB.DocumentClient({
@@ -30,7 +31,7 @@ export const handler = async (
       .put({
         TableName: process.env.APPOINTMENTS_TABLE_NAME as string,
         Item: {
-          patient_id: payload.patient_id,
+          patient_id: patientId,
           appointment_id: appointmentId,
           doctor_name: payload.doctor_name,
           appointment_date_time: payload.appointment_date_time,
