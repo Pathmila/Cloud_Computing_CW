@@ -44,7 +44,7 @@ export class Appointment extends Construct {
       functionName: "BookAppointment",
       entry: path.join(__dirname, "..", "lambda/appointment/appointment.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_20_X,
       environment: {
         APPOINTMENTS_TABLE_NAME: this.appointmentTable.tableName,
         REMINDER_TABLE_NAME: this.reminderTable.tableName,
@@ -65,7 +65,7 @@ export class Appointment extends Construct {
       functionName: "GetAppointments",
       entry: path.join(__dirname, "..", "lambda/appointment/getAppointment.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_20_X,
       environment: {
         APPOINTMENTS_TABLE_NAME: this.appointmentTable.tableName,
       },

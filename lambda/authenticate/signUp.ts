@@ -13,15 +13,20 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   console.log("SignUp Handler", event);
 
-  const body = JSON.parse(event.body as string);
-  await cognitoSignup(body);
+  try {
+    const body = JSON.parse(event.body as string);
+    await cognitoSignup(body);
 
-  return {
-    body: JSON.stringify({
-      message: "Patient Registered Successfully",
-    }),
-    statusCode: 200,
-  };
+    return {
+      body: JSON.stringify({
+        message: "Patient Registered Successfully",
+      }),
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
 };
 
 const cognitoSignup = async (body: ISignUp): Promise<void> => {

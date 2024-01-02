@@ -16,7 +16,7 @@ export class Reminder extends Construct {
       {
         functionName: "Reminder",
         entry: path.join(__dirname, "..", "lambda/reminder.ts"),
-        runtime: lambda.Runtime.NODEJS_LATEST,
+        runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
         bundling: {
           target: "es2020",

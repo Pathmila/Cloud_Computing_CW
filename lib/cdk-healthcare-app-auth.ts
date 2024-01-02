@@ -52,7 +52,7 @@ export class Authenticator extends Construct {
       functionName: "SignUp",
       entry: path.join(__dirname, "..", "lambda/authenticate/signUp.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_20_X,
       bundling: {
         target: "es2020",
       },
@@ -68,7 +68,7 @@ export class Authenticator extends Construct {
       functionName: "SignIn",
       entry: path.join(__dirname, "..", "lambda/authenticate/signIn.ts"),
       handler: "handler",
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_20_X,
       bundling: {
         target: "es2020",
       },

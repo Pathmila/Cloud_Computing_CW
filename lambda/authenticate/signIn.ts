@@ -13,15 +13,20 @@ interface ISignIn {
 export const handler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
-  console.log("SignIn Handler", event);
+  try {
+    console.log("SignIn Handler", event);
 
-  const body: ISignIn = JSON.parse(event.body as string);
-  const tokens = await cognitoSignIn(body.username, body.password);
-  console.log("tokens", tokens);
-  return {
-    body: JSON.stringify({ tokens }),
-    statusCode: 200,
-  };
+    const body: ISignIn = JSON.parse(event.body as string);
+    const tokens = await cognitoSignIn(body.username, body.password);
+    console.log("tokens", tokens);
+    return {
+      body: JSON.stringify({ tokens }),
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
 };
 
 const cognitoSignIn = async (username: string, password: string) => {
