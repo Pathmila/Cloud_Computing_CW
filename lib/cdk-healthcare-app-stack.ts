@@ -8,9 +8,8 @@ import {
   CodePipelineSource,
   ShellStep,
 } from "aws-cdk-lib/pipelines";
-import { Reminder } from "./cdk-healthcare-app-reminder";
-import * as ssm from "@aws-cdk/aws-ssm";
 import { getParameterValues } from "./aws-configs/parameters";
+import * as iam from "@aws-cdk/aws-iam";
 
 export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -22,8 +21,20 @@ export class CdkHealthcareAppStack extends cdk.Stack {
 
   //defining pipeline
   private async setCICDPipeLine() {
-    new CodePipeline(this, "HealthCareAppPipeline", {
+    const ssmReadPolicy = new iam.PolicyStatement({
+      actions: ["ssm:GetParameters"],
+      resources: ["*"],
+    });
+
+    // @ts-ignore
+    const codePipelineRole = new iam.Role(this, "CodePipelineRole", {
+      assumedBy: new iam.ServicePrincipal("codepipeline.amazonaws.com"),
+    });
+    codePipelineRole.addToPolicy(ssmReadPolicy);
+
+    const pipeline = new CodePipeline(this, "HealthCareAppPipeline", {
       pipelineName: "HealthCareAppPipeline",
+      role: codePipelineRole,
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.connection(
           await getParameterValues("/HEALTH_APP/PROD/REPOSITORY_NAME"),
@@ -38,6 +49,8 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       }),
     });
   }
+
+  private pipeLineIAMRole() {}
 
   private apiGateway() {
     const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
