@@ -14,6 +14,7 @@ export const handler = async (
     const ses = new AWS.SES({ region: process.env.REGION });
 
     if (event.Records[0].eventName === "REMOVE") {
+      console.log(event.Records[0].dynamodb?.OldImage);
       const record = event.Records.map((record) => {
         return {
           // @ts-ignore
