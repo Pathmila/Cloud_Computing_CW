@@ -9,6 +9,8 @@ import {
   ShellStep,
 } from "aws-cdk-lib/pipelines";
 import { Reminder } from "./cdk-healthcare-app-reminder";
+import * as ssm from "@aws-cdk/aws-ssm";
+import { getParameterValues } from "./aws-configs/parameters";
 
 export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -19,16 +21,17 @@ export class CdkHealthcareAppStack extends cdk.Stack {
   }
 
   //defining pipeline
-  private setCICDPipeLine() {
+  private async setCICDPipeLine() {
     new CodePipeline(this, "HealthCareAppPipeline", {
       pipelineName: "HealthCareAppPipeline",
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.connection(
-          "rukmals/healthcare-app",
-          "devtest",
+          await getParameterValues("/HEALTH_APP/PROD/REPOSITORY_NAME"),
+          await getParameterValues("/HEALTH_APP/PROD/BRANCH_NAME"),
           {
-            connectionArn:
-              "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
+            connectionArn: await getParameterValues(
+              "/HEALTH_APP/PROD/CONNECTION_ARN",
+            ),
           },
         ),
         commands: ["npm ci", "npm run build", "npx cdk synth"],

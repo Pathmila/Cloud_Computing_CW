@@ -16,9 +16,11 @@ export const handler = async (
   try {
     console.log("event", event);
     const payload: IAppointment = JSON.parse(event.body as string);
-    console.log("appointment payload", payload);
 
-    const patientId = extractTokenData(event?.headers?.Authorization as string);
+    const tokenDecode = extractTokenData(
+      event?.headers?.Authorization as string,
+    );
+    const patientId = tokenDecode.sub;
     console.log("patientId", patientId);
 
     let appointmentId = uuidv4();
