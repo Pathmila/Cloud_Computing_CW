@@ -13,6 +13,7 @@ export const handler = async (
   callback: Callback,
 ): Promise<void> => {
   console.log("Pre SignUp Handler", event, context);
+
   event.response.autoConfirmUser = true;
   event.response.autoVerifyEmail = true;
   callback(null, event);

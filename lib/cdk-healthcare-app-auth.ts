@@ -7,17 +7,13 @@ import * as cognito from "aws-cdk-lib/aws-cognito";
 import { appClientConfig, cognitoConfigs } from "./aws-configs/cognito";
 import { UserPoolOperation } from "aws-cdk-lib/aws-cognito";
 import { Duration } from "aws-cdk-lib";
-export interface AuthenticatorProps {
-  makeAppointmentFunction: lambda.Function;
-}
 
 export class Authenticator extends Construct {
   private cognitoClientId: string;
   private userPoolId: string;
-  public readonly authorizationHandler: lambda.Function;
   public userPoolInstance;
 
-  constructor(scope: Construct, id: string, props: AuthenticatorProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id);
     this.userPoolInstance = this.cognitoInit();
   }

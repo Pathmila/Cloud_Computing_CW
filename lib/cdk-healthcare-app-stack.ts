@@ -14,42 +14,26 @@ export class CdkHealthcareAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // const appAppointment = new Appointment(this, "AppAppointment");
-    const appReminder = new Reminder(this, "AppReminder");
     this.apiGateway();
+    this.setCICDPipeLine();
+  }
 
-    //defining pipeline
-    const healthcareAppPipeline = new CodePipeline(
-      this,
-      "HealthCareAppPipline",
-      {
-        pipelineName: "HealthCareAppPipeline",
-        synth: new ShellStep("Synth", {
-          input: CodePipelineSource.connection(
-            "rukmals/healthcare-app",
-            "cognito-config-latest",
-            {
-              connectionArn:
-                "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
-            },
-          ),
-          // installCommands: ['npm i -g npm@latest', 'npm install'],
-          commands: ["npm ci", "npm run build", "npx cdk synth"],
-        }),
-      },
-    );
-
-    //app api gateway define
-    // const healthCareAppAPIGw = new apigw.RestApi(this, "HealthCareAppAPIGW");
-    //
-    // const baseRoute = healthCareAppAPIGw.root.addResource("v1");
-
-    // // appointment operations
-    // const appointmentCreate = appointmentRoute.addResource("create");
-    // appointmentCreate.addMethod(
-    //   "GET",
-    //   new apigw.LambdaIntegration(appAuthenticator.authorizationHandler),
-    // );
+  //defining pipeline
+  private setCICDPipeLine() {
+    new CodePipeline(this, "HealthCareAppPipeline", {
+      pipelineName: "HealthCareAppPipeline",
+      synth: new ShellStep("Synth", {
+        input: CodePipelineSource.connection(
+          "rukmals/healthcare-app",
+          "devtest",
+          {
+            connectionArn:
+              "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
+          },
+        ),
+        commands: ["npm ci", "npm run build", "npx cdk synth"],
+      }),
+    });
   }
 
   private apiGateway() {
@@ -59,9 +43,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
     const appointmentRoute = baseRoute.addResource("appointment");
 
     const appAppointment = new Appointment(this, "AppAppointment");
-    const appAuthenticator = new Authenticator(this, "AppAuthenticator", {
-      makeAppointmentFunction: appAppointment.createAppointment,
-    });
+    const appAuthenticator = new Authenticator(this, "AppAuthenticator");
 
     const auth = new apigw.CognitoUserPoolsAuthorizer(
       this,
@@ -71,6 +53,7 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       },
     );
 
+    // Auth Routes
     authRoute
       .addResource("signup")
       .addMethod(
@@ -83,15 +66,25 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       .addMethod(
         "POST",
         new apigw.LambdaIntegration(appAuthenticator.signIn()),
-        {
-          authorizer: auth,
-          authorizationType: apigw.AuthorizationType.COGNITO,
-        },
       );
 
-      appointmentRoute.addMethod(
-          "POST",
-          new apigw.LambdaIntegration(appAppointment.createAppointment()),
-      );
+    // Appointment Routes
+    appointmentRoute.addMethod(
+      "POST",
+      new apigw.LambdaIntegration(appAppointment.createAppointment()),
+      {
+        authorizer: auth,
+        authorizationType: apigw.AuthorizationType.COGNITO,
+      },
+    );
+
+    appointmentRoute.addMethod(
+      "GET",
+      new apigw.LambdaIntegration(appAppointment.getAppointments()),
+      {
+        authorizer: auth,
+        authorizationType: apigw.AuthorizationType.COGNITO,
+      },
+    );
   }
 }

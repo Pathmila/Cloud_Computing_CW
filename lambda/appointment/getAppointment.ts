@@ -7,12 +7,13 @@ export const handler = async (
   try {
     console.log("request:", JSON.stringify(event, undefined, 2));
 
-    const dynamoDB = new AWS.DynamoDB.DocumentClient();
+    const dynamoDB = new AWS.DynamoDB.DocumentClient({
+      region: process.env.REGION,
+    });
     const tableName = process.env.APPOINTMENTS_TABLE_NAME as string;
 
     const scanResult = await dynamoDB.scan({ TableName: tableName }).promise();
     const appointments = scanResult.Items;
-
     console.log("Retrieved Appointments:", JSON.stringify(appointments));
 
     return {
@@ -22,11 +23,6 @@ export const handler = async (
     };
   } catch (error) {
     console.error("Error retrieving appointments:", error);
-
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "text/plain" },
-      body: "Internal Server Error",
-    };
+    throw error;
   }
 };
