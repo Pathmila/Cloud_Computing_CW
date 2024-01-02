@@ -23,6 +23,7 @@ export class Authenticator extends Construct {
     pool.addTrigger(
       UserPoolOperation.PRE_SIGN_UP,
       new lambdaNodejs.NodejsFunction(this, "[Auth]PreSignUp", {
+        functionName: "PreSignUp",
         entry: path.join(__dirname, "..", "lambda/authenticate/preSignUp.ts"),
         handler: "handler",
         runtime: lambda.Runtime.NODEJS_20_X,

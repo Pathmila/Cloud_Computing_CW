@@ -41,7 +41,7 @@ export class Appointment extends Construct {
   //make the appointment
   createAppointment() {
     const fn = new lambdaNodejs.NodejsFunction(this, "AppointmentHandler", {
-      functionName: "Appointment",
+      functionName: "BookAppointment",
       entry: path.join(__dirname, "..", "lambda/appointment/appointment.ts"),
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
@@ -62,6 +62,7 @@ export class Appointment extends Construct {
   //Get appointments
   getAppointments() {
     const fn = new lambdaNodejs.NodejsFunction(this, "GetAppointmentHandler", {
+      functionName: "GetAppointments",
       entry: path.join(__dirname, "..", "lambda/appointment/getAppointment.ts"),
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
