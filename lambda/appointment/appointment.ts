@@ -86,7 +86,7 @@ export const handler = async (
 
 const timestampMinutesBefore = (localTime: string, minutesBefore: number) => {
   const date = new Date(localTime);
-  date.setTime(date.getTime() - minutesBefore * 60 * 1000);
-  console.log("LocalTime", date.toLocaleString());
-  return date.getTime();
+  const newDate = new Date(date.getTime() - minutesBefore * 60 * 1000);
+  console.log("LocalTime", newDate.toISOString());
+  return newDate.getTime();
 };

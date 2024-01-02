@@ -8,7 +8,6 @@ import {
   CodePipelineSource,
   ShellStep,
 } from "aws-cdk-lib/pipelines";
-import { getParameterValues } from "./aws-configs/parameters";
 import { Reminder } from "./cdk-healthcare-app-reminder";
 
 export class CdkHealthcareAppStack extends cdk.Stack {
@@ -26,13 +25,12 @@ export class CdkHealthcareAppStack extends cdk.Stack {
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.connection(
           "rukmals/healthcare-app",
-          "devtest",
+          "healthcareapp-production",
           {
             connectionArn:
               "arn:aws:codestar-connections:eu-north-1:420571806689:connection/8257ba45-43f9-4033-abca-f37ccdd4110d",
           },
         ),
-        // installCommands: ['npm i -g npm@latest', 'npm install'],
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
     });

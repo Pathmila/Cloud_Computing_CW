@@ -11,7 +11,7 @@ export const handler = async (
 ): Promise<LambdaResponse> => {
   console.log("Event", event);
   try {
-    const ses = new AWS.SES({ region: process.env.REGION });
+    console.log(event.Records[0].dynamodb?.OldImage);
 
     if (event.Records[0].eventName === "REMOVE") {
       console.log(event.Records[0].dynamodb?.OldImage);

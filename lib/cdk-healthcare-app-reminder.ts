@@ -39,6 +39,10 @@ export class Reminder extends Construct {
       managedPolicyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess",
     });
 
+    this.hourlyReminder.role?.addManagedPolicy({
+      managedPolicyArn: "arn:aws:iam::aws:policy/AmazonCognitoReadOnly",
+    });
+
     //configuring event stream from dynamoDb -> lambda
     this.hourlyReminder.addEventSource(
       new DynamoEventSource(props.appointmentHourlyReminderTable, {
