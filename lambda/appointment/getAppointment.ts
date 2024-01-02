@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as AWS from "aws-sdk";
+import { extractTokenData } from "../helper";
 
 export const handler = async (
   event: APIGatewayEvent,
@@ -10,9 +11,22 @@ export const handler = async (
     const dynamoDB = new AWS.DynamoDB.DocumentClient({
       region: process.env.REGION,
     });
+    const tokenDecode = extractTokenData(
+      event?.headers?.Authorization as string,
+    );
+    const patientId = tokenDecode.sub;
+    console.log("patientId", patientId);
     const tableName = process.env.APPOINTMENTS_TABLE_NAME as string;
 
-    const scanResult = await dynamoDB.scan({ TableName: tableName }).promise();
+    const scanResult = await dynamoDB
+      .query({
+        TableName: tableName,
+        KeyConditionExpression: "patient_id=:patient_id",
+        ExpressionAttributeValues: {
+          patient_id: patientId,
+        },
+      })
+      .promise();
     const appointments = scanResult.Items;
     console.log("Retrieved Appointments:", JSON.stringify(appointments));
 
