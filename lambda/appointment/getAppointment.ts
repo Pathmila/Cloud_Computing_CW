@@ -21,9 +21,9 @@ export const handler = async (
     const scanResult = await dynamoDB
       .query({
         TableName: tableName,
-        KeyConditionExpression: "patient_id=:patientId",
+        KeyConditionExpression: "patient_id= :patientId",
         ExpressionAttributeValues: {
-          patientId: patientId,
+          ":patientId": patientId,
         },
       })
       .promise();

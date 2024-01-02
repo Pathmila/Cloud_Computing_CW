@@ -50,6 +50,7 @@ export const handler = async (
         Item: {
           appointment_id: appointmentId,
           reminder_id: uuidv4(),
+          patient_id: patientId,
           remind_at: timestampMinutesBefore(payload.appointment_date_time, 60),
           reminderType: "60_Minutes_Before",
           createdat: Date.now(),
@@ -64,6 +65,7 @@ export const handler = async (
         Item: {
           appointment_id: appointmentId,
           reminder_id: uuidv4(),
+          patient_id: patientId,
           remind_at: timestampMinutesBefore(payload.appointment_date_time, 15),
           reminderType: "15_Minutes_Before",
           createdat: Date.now(),
